@@ -1,12 +1,15 @@
 module Notes
 
 -- Note type
+public export
 data Note = C | D | E | F | G | A | B | Cs | Ds | Fs | Gs | As | Db | Eb | Gb | Ab | Bb
 
 -- Pitch: a note at a specific octave
+public export
 data Pitch = MkPitch Note Int
 
 -- Enharmonic equivalence
+export
 eqNote : Note -> Note -> Bool
 eqNote C  C  = True
 eqNote D  D  = True
@@ -37,9 +40,11 @@ eqNote As Bb = True
 eqNote Bb As = True
 eqNote _  _  = False
 
+export
 Eq Note where
   (==) = eqNote
 
+export
 Show Note where
   show C  = "C";  show D  = "D";  show E  = "E";  show F  = "F"
   show G  = "G";  show A  = "A";  show B  = "B"
