@@ -96,14 +96,22 @@ numToNote n =
     Just (sharp, _) => sharp
     Nothing => C  -- unreachable: allNotes has exactly 12 entries
 
+-- Structural (non-enharmonic) check for flat reference notes
+isFlatRef : Note -> Bool
+isFlatRef Db = True
+isFlatRef Eb = True
+isFlatRef Gb = True
+isFlatRef Ab = True
+isFlatRef Bb = True
+isFlatRef _  = False
+
 -- Ordinal -> note, using flat spelling when reference note is flat
 export
 numToNote' : Note -> Int -> Note
 numToNote' ref n =
-  let useFlats = ref `elem` [Db, Eb, Gb, Ab, Bb]
-  in case listIndex (cast (mod12 n)) allNotes of
-       Just (sharp, Just flat) => if useFlats then flat else sharp
-       Just (sharp, Nothing)   => sharp
-       Nothing                 => C
+  case listIndex (cast (mod12 n)) allNotes of
+    Just (sharp, Just flat) => if isFlatRef ref then flat else sharp
+    Just (sharp, Nothing)   => sharp
+    Nothing                 => C
 
 -- The End
