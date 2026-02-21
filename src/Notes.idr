@@ -114,4 +114,62 @@ numToNote' ref n =
     Just (sharp, Nothing)   => sharp
     Nothing                 => C
 
+-- Polymorphic transpose: tr n x shifts x up by n semitones
+public export
+interface Transposable a where
+  tr : Int -> a -> a
+
+-- Transposing a raw ordinal is plain addition (unbounded)
+export
+Transposable Int where
+  tr n x = n + x
+
+-- Transposing a note converts through ordinal space
+export
+Transposable Note where
+  tr n x =
+    case noteToNum x of
+      Just num => numToNote (n + num)
+      Nothing  => x
+
+-- Transposing a (root, something) pair transposes only the root
+export
+Transposable b => Transposable (Note, b) where
+  tr n (root, var) = (tr n root, var)
+
+-- Mod-12 transpose for raw ordinals (wraps at octave)
+export
+trMod : Int -> Int -> Int
+trMod n x = mod12 (n + x)
+
+-- Invert a note by n semitones (mod 12)
+export
+inv : Int -> Note -> Note
+inv n x =
+  case noteToNum x of
+    Just num => numToNote (mod12 (num - n))
+    Nothing  => x
+
+-- All rotational inversions of an ordinal list
+-- e.g. inversions [0,4,7] = [[0,4,7],[4,7,0],[7,0,4]]
+export
+inversions : List Int -> List (List Int)
+inversions notes = go (length notes) notes
+  where
+    step : List Int -> List Int
+    step []             = []
+    step (root :: tail) = tail ++ [mod12 (root + 12)]
+    go : Nat -> List Int -> List (List Int)
+    go Z     _  = []
+    go (S k) xs = xs :: go k (step xs)
+
+-- Canonical form: shift so the minimum ordinal becomes 0
+-- e.g. canonical [7,5,4] = [3,1,0]
+export
+canonical : List Int -> List Int
+canonical []        = []
+canonical (x :: xs) =
+  let minOrd = foldl min x xs
+  in map (\n => n - minOrd) (x :: xs)
+
 -- The End
