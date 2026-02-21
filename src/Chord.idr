@@ -3,7 +3,7 @@ module Chord
 import Notes
 import Data.List
 
--- 40 chord types
+-- 37 chord types
 public export
 data ChordVar
   = Major | Minor | Dim   | Aug   | X4p5  | Maj4  | Sus4  | Min4
