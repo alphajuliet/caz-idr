@@ -53,4 +53,57 @@ Show Note where
   show Db = "Db"; show Eb = "Eb"; show Gb = "Gb"
   show Ab = "Ab"; show Bb = "Bb"
 
+-- Mod-12 arithmetic (handles negatives correctly)
+export
+mod12 : Int -> Int
+mod12 n = ((n `mod` 12) + 12) `mod` 12
+
+-- 12 semitone slots; entry is (sharp, Just flat) for enharmonic pairs
+export
+allNotes : List (Note, Maybe Note)
+allNotes = [ (C,  Nothing),  (Cs, Just Db), (D,  Nothing),  (Ds, Just Eb)
+           , (E,  Nothing),  (F,  Nothing),  (Fs, Just Gb), (G,  Nothing)
+           , (Gs, Just Ab),  (A,  Nothing),  (As, Just Bb), (B,  Nothing) ]
+
+-- Canonical 12-note set (one spelling per semitone)
+export
+basicNotes : List Note
+basicNotes = [C, Cs, D, Eb, E, F, Fs, G, Ab, A, Bb, B]
+
+-- Safe list index by position
+listIndex : Nat -> List a -> Maybe a
+listIndex _ []          = Nothing
+listIndex Z     (x :: _)  = Just x
+listIndex (S k) (_ :: xs) = listIndex k xs
+
+-- Note -> ordinal (0-11); respects enharmonics
+export
+noteToNum : Note -> Maybe Int
+noteToNum note = go 0 allNotes
+  where
+    go : Int -> List (Note, Maybe Note) -> Maybe Int
+    go _ [] = Nothing
+    go i ((sharp, mflat) :: rest) =
+      if note == sharp || mflat == Just note
+        then Just i
+        else go (i + 1) rest
+
+-- Ordinal -> note (sharp spelling by default)
+export
+numToNote : Int -> Note
+numToNote n =
+  case listIndex (cast (mod12 n)) allNotes of
+    Just (sharp, _) => sharp
+    Nothing => C  -- unreachable: allNotes has exactly 12 entries
+
+-- Ordinal -> note, using flat spelling when reference note is flat
+export
+numToNote' : Note -> Int -> Note
+numToNote' ref n =
+  let useFlats = ref `elem` [Db, Eb, Gb, Ab, Bb]
+  in case listIndex (cast (mod12 n)) allNotes of
+       Just (sharp, Just flat) => if useFlats then flat else sharp
+       Just (sharp, Nothing)   => sharp
+       Nothing                 => C
+
 -- The End
