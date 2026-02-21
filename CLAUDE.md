@@ -81,8 +81,6 @@ There is no automated test suite. Verify behaviour in the REPL.
 
 5. **`numsToChord` limitation**: Intervals are mod-12'd before matching, so ninth chords (with interval 14) do not round-trip through `numsToChord`. This matches the Clojure source behaviour.
 
-### Known Quirks (inherited from Clojure source)
+### Known Quirks
 
 - `X4p5` and `Sus4` share identical intervals `[0, 5, 7]`. `numsToChord` always returns `X4p5` for that interval set.
-- `Minor` scale (`[0,2,3,5,7,8,11]`) is harmonic minor, not natural minor. Natural minor is `Aeolian`.
-- `MinorPentatonic = [0,3,4,7,10]` — this is the value from the Clojure source and is faithfully replicated here, even though it differs from the standard music theory definition (`[0,3,5,7,10]`).

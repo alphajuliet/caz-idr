@@ -1,0 +1,6 @@
+package test
+depends = caz
+sourcedir = "test"
+modules = Test
+main = Test
+executable = test

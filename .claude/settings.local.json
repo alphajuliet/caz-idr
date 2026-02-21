@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(idris2:*)",
+      "Bash(cat:*)",
+      "Bash(git:*)",
+      "Bash(printf :exec printLn \\(tr {a=Note} 5 C\\)\\\\n:exec printLn \\(tr {a=Int} 5 7\\)\\\\n:exec printLn \\(trMod 5 7\\)\\\\n:exec printLn \\(inv 4 E\\)\\\\n:exec printLn \\(inversions [0,4,7]\\)\\\\n:exec printLn \\(canonical [7,5,4]\\)\\\\n:q\\\\n:*)"
+    ]
+  }
+}
