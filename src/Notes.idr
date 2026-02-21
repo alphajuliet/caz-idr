@@ -134,7 +134,7 @@ Transposable Note where
 
 -- Transposing a (root, something) pair transposes only the root
 export
-Transposable b => Transposable (Note, b) where
+Transposable (Note, b) where
   tr n (root, var) = (tr n root, var)
 
 -- Mod-12 transpose for raw ordinals (wraps at octave)
